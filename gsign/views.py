@@ -265,7 +265,7 @@ def generateCsv_db():
 
         if generate :
             print("email is sended...")
-            send_mail_csv(["jobcracking907@gmail.com","siddesh.bijavara@gmail.com"],mail)
+            send_mail_csv(["jobcracking907@gmail.com"],mail)
             print("email sended.")
             timer.sleep(10)
         
