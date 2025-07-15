@@ -175,7 +175,7 @@ def exchange_code(request):
         'code': code,
         'client_id': '368680050758-r709ccn0u05mg04kna7g1rf0i789rir8.apps.googleusercontent.com',
         'client_secret': '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',
-        'redirect_uri': 'https://cd62-223-185-132-97.ngrok-free.app/exchange-code',
+        'redirect_uri': 'https://vcvsteps.onrender.com/exchange-code',
         'grant_type': 'authorization_code'
     })
 
