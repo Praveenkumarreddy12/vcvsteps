@@ -1,6 +1,4 @@
-Python==3.7.0
-Django==3.0.7        # Replace with your actual version
-requests==2.31.0     # For API calls (e.g., Google Fit)
-google-auth==2.29.0  # For handling Google OAuth tokens
-oauthlib==3.2.2
-requests-oauthlib==1.3.1
+Django>=5.0,<6.0
+djangorestframework==3.14.0
+gunicorn==20.1.0
+requests>=2.31.0
