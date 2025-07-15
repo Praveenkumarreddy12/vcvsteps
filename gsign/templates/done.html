@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Done</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <p>Welcome to Fittness Rcord App.</p>
+    <p>email :-</p>
+    <p id = "emm"></p>
+    <p>Please be signin</p>
+
+    <form action="{% url 'csv_of_all_candidates' %}" method="get">
+        <button type="submit" id="downloadCsv" style="display: none;">Download CSV</button>
+    </form>
+    
+
+    <button id="signout-btn" onclick="signOut()" style="display: block;">Sign Out</button>
+
+    <script>
+    // Optional: Get email from URL or localStorage (you can remove this if not needed)
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get("email") || localStorage.getItem("email");
+    document.getElementById("emm").innerText = email;
+    // console.log(email);
+    if (email == "siddesh.bijavara@gmail.com" || email == "jobcracking907@gmail.com"){
+        document.getElementById("downloadCsv").style.display = "inline-block";
+        console.log(email);
+    }
+
+    function signOut() {
+      google.accounts.id.disableAutoSelect(); // this clears "remembered" login
+      alert("User signed out: " + (email || "unknown"));
+      localStorage.removeItem("email");
+      document.getElementById("signout-btn").style.display = "none";
+      window.location.href='/';
+    }
+    </script>
+</body>
+</html>

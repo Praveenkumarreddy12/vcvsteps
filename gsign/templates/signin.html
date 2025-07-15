@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google OAuth Login with Sign Out</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .messages { color: red; }
+    .container {
+      max-width: 400px;
+      margin: 5% auto;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 16px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .g_id_signin {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #ccc;
+      padding: 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 20px;
+      background-color: #fff;
+    }
+    .home-section {
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .home-section h2 {
+      color: #2c3e50;
+    }
+    .home-section p, .home-section ul {
+      color: #333;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body>
+
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+          {{ message }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <div class="container">
+    <h2>Fitness <i>Checker</i></h2>
+    <!-- <div class="g_id_signin" onclick="requestAccessToken()"> -->
+      <div class="g_id_signin" onclick="requestAuthCode()">
+      <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" width="20" height="20">
+      <span>Log in with Google</span>
+    </div>
+  </div>
+
+  <div class="home-section">
+    <h2>🚀 Face of Fitness – VE Commercial Vehicles 🏅</h2>
+    <p>Welcome to <strong>Face of Fitness</strong>, the official step challenge by VE Commercial Vehicles designed to energize, engage, and inspire every member of our organization to move more and live healthier!</p>
+
+    <h3>🔷 What’s It All About?</h3>
+    <p>Using the Google Fit app, we’re tracking your daily steps to bring a fun and motivating fitness competition to life—area office-wise. It’s simple: walk more, track more, and climb the leaderboard!</p>
+
+    <h3>🛠️ How It Works:</h3>
+    <ul>
+      <li><strong>Connect Google Fit:</strong> Sync your activity seamlessly through the Google Fit app.</li>
+      <li><strong>Step Up Daily:</strong> Every step you take will be automatically recorded.</li>
+      <li><strong>Compete Locally:</strong> Rankings are maintained within each area office.</li>
+      <li><strong>Track Progress:</strong> Weekly and final leaderboards will show top steppers.</li>
+    </ul>
+
+    <h3>🏆 Recognition & Rewards:</h3>
+    <ul>
+      <li>Top 2 participants from each area office will be crowned the <strong>“Face of Fitness”</strong>.</li>
+      <li>Winners receive exclusive recognition and rewards from VE Commercial Vehicles.</li>
+    </ul>
+
+    <h3>Why we are accessing user data</h3>
+    <ul>
+      <li>“We are accessing your Google Fit step data solely to verify and track your participation in the ‘Face of Fitness’ challenge organized by VE Commercial Vehicles, ensuring accurate leaderboard rankings and fair competition within your area office.”</li>
+    </ul>
+
+    <h3><a href="https://praveenkumarreddy12.github.io/privacy-policy/privacy-policy.html">privacy-policy</a></h3>
+
+    <h3>💪 Let’s Move Together!</h3>
+    <p>Join your colleagues in embracing a healthier lifestyle, one step at a time. Whether you're walking during breaks or jogging after hours—every step brings you closer to the title of Face of Fitness!</p>
+
+    <p><strong>Ready. Set. Step!</strong></p>
+  </div>
+
+  <button id="signout-btn" onclick="signOut()" style="display: none;">Sign Out</button>
+
+  <script>
+    // let tokenClient;
+
+    // window.onload = () => {
+    //   tokenClient = google.accounts.oauth2.initTokenClient({
+    //     client_id: '368680050758-36kcbvuihqnuiekpl34dnolcudqqgjbi.apps.googleusercontent.com',
+    //     scope: 'openid email profile https://www.googleapis.com/auth/fitness.activity.read',
+    //     callback: (tokenResponse) => {
+    //       console.log("Access Token:", tokenResponse.access_token);
+    //       fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+    //         headers: {
+    //           Authorization: `Bearer ${tokenResponse.access_token}`,
+    //         },
+    //       })
+    //         .then(res => res.json())
+    //         .then(user => {
+    //           console.log("Email:", user.email);
+    //           console.log("name:- ", user.firstname)
+    //           console.log("access Token :- ",tokenResponse.access_token)
+              // window.location.href = `/google?accessToken=${encodeURIComponent(tokenResponse.access_token)}&email=${encodeURIComponent(user.email)}`;
+    //         })
+    //         .catch(err => console.error("Error getting user info", err));
+    //     },
+    //   });
+    // };
+
+    // function requestAccessToken() {
+    //   tokenClient.requestAccessToken();
+    // }
+
+    let codeClient;
+
+window.onload = () => {
+  codeClient = google.accounts.oauth2.initCodeClient({
+    client_id: '368680050758-r709ccn0u05mg04kna7g1rf0i789rir8.apps.googleusercontent.com',
+    scope: 'openid email profile https://www.googleapis.com/auth/fitness.activity.read',
+    redirect_uri: 'https://cd62-223-185-132-97.ngrok-free.app/exchange-code',
+    ux_mode: 'redirect',
+    callback: (response) => {
+      console.log("Auth Code:", response.code);
+
+      // Send auth code to your backend to exchange for access & refresh tokens
+      fetch('/exchange-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ code: response.code })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Backend Response:", data);
+        alert("Logged in successfully!");
+        window.location.href = `/google?email=${encodeURIComponent(data.email)}`;
+
+
+      })
+      
+      .catch(err => {
+        console.error("Failed to exchange code:", err);
+      });
+    }
+  });
+};
+
+function requestAuthCode() {
+  codeClient.requestCode();
+}
+
+
+    function signOut() {
+      // Placeholder for manual logout logic
+      alert("You have been signed out.");
+      location.reload();
+    }
+  </script>
+</body>
+</html>
