@@ -174,7 +174,7 @@ def exchange_code(request):
     token_res = requests.post('https://oauth2.googleapis.com/token', data={
         'code': code,
         'client_id': '368680050758-r709ccn0u05mg04kna7g1rf0i789rir8.apps.googleusercontent.com',
-        'client_secret': '',
+        'client_secret': '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',
         'redirect_uri': 'https://cd62-223-185-132-97.ngrok-free.app/exchange-code',
         'grant_type': 'authorization_code'
     })
