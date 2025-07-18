@@ -144,6 +144,7 @@ window.onload = () => {
     scope: 'openid email profile https://www.googleapis.com/auth/fitness.activity.read',
     redirect_uri: 'https://vcvsteps.onrender.com/exchange-code',
     ux_mode: 'redirect',
+    prompt: 'consent',
     callback: (response) => {
       console.log("Auth Code:", response.code);
 
